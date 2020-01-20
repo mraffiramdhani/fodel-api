@@ -1,7 +1,7 @@
 {
-  "name": "al-dicoding",
+  "name": "fodel-api",
   "version": "1.0.0",
-  "description": "Back End API for Challenge Submission on Dicoding",
+  "description": "Back End API for Fodel",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
