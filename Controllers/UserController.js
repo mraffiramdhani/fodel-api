@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 /* eslint-disable no-else-return */
-const qs = require('qs');
-const { response, redis, urlParser } = require('../Utils');
-const { User } = require('../Services');
+const qs = require('qs'),
+  bcrypt = require('bcryptjs');
+const { response, redis, urlParser, signToken, verifyToken } = require('../Utils');
+const { User, Token } = require('../Services');
 
 const getUsers = async (req, res) => {
   const { search, sort } = req.query;
@@ -60,10 +61,43 @@ const getUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  
-}
+  const { id } = req.params;
+  const user = await User.getUserById(id);
+  if (user) {
+    return response(res, 200, true, 'Data Found.', user[0]);
+  }
+  else {
+    return response(res, 200, false, 'Data not Found.');
+  }
+};
+
+const registerUser = async (req, res) => {
+  const { name, username, password } = req.body;
+  const role_id = 3;
+  var data = {
+    name, username, password, role_id
+  };
+
+  if (!data.name || !data.username || !data.password) {
+    return response(res, 200, false, 'Please provide a valid data.');
+  }
+  else {
+    await User.createUser(data).then(() => {
+      const token = signToken({ name, username, role_id });
+      Token.putToken({ token }, (err) => {
+        if (err) {
+          return response(res, 200, false, 'Error', err);
+        }
+        else {
+          return response(res, 200, true, 'User Created Successfully.', { token, name, username });
+        }
+      });
+    }).catch((error) => response(res, 200, false, 'Error.', error));
+  }
+};
 
 module.exports = {
   getUsers,
-  getUserById
+  getUserById,
+  registerUser
 };
