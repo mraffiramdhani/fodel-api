@@ -21,6 +21,8 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.1.0",
     "path": "^0.12.7",
+    "redis": "^2.8.0",
+    "redis-server": "^1.2.2",
     "response-time": "^2.3.2"
   },
   "devDependencies": {
