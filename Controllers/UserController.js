@@ -2,7 +2,9 @@
 /* eslint-disable no-else-return */
 const qs = require('qs'),
   bcrypt = require('bcryptjs');
-const { response, redis, urlParser, signToken, verifyToken } = require('../Utils');
+const {
+  response, redis, urlParser, signToken, verifyToken
+} = require('../Utils');
 const { User, Token } = require('../Services');
 
 const getUsers = async (req, res) => {
@@ -71,11 +73,12 @@ const getUserById = async (req, res) => {
   }
 };
 
+// eslint-disable-next-line consistent-return
 const registerUser = async (req, res) => {
   const { name, username, password } = req.body;
-  const role_id = 3;
+  const fixedRoleId = 3;
   var data = {
-    name, username, password, role_id
+    name, username, password, role_id: fixedRoleId
   };
 
   if (!data.name || !data.username || !data.password) {
@@ -83,7 +86,7 @@ const registerUser = async (req, res) => {
   }
   else {
     await User.createUser(data).then(() => {
-      const token = signToken({ name, username, role_id });
+      const token = signToken({ name, username, role_id: fixedRoleId });
       Token.putToken({ token }, (err) => {
         if (err) {
           return response(res, 200, false, 'Error', err);
@@ -96,8 +99,62 @@ const registerUser = async (req, res) => {
   }
 };
 
+const checkToken = async (req, res) => {
+  const { token } = req.body;
+  await Token.isRevoked(token).then((data) => {
+    const auth = verifyToken(token);
+    if (data.length === 0) {
+      if (auth.role_id === 1) {
+        return response(res, 200, true, 'Authentication Success.', {
+          role: 'administrator',
+          name: auth.name
+        });
+      }
+      else if (auth.role_id === 2) {
+        return response(res, 200, true, 'Authentication Success.', {
+          role: 'restaurant',
+          name: auth.name
+        });
+      }
+      else if (auth.role_id === 3) {
+        return response(res, 200, true, 'Authentication Success.', {
+          role: 'customer',
+          name: auth.name
+        });
+      }
+    }
+    else {
+      return response(res, 200, true, 'Session Expired. Please Login Again.');
+    }
+  }).catch((error) => {
+    return response(res, 200, false, 'Error.', error);
+  });
+};
+
+// eslint-disable-next-line consistent-return
+const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return response(res, 200, false, 'Please Provide a Valid Data.');
+  }
+  else {
+    const user = await User.getUserByUsername(username);
+    if (user.length > 0) {
+      if (bcrypt.compareSync(password, user[0].password)) {
+        // eslint-disable-next-line camelcase
+        const { id, name, role_id } = user[0];
+        const token = signToken({
+          id, name, username, role_id
+        });
+      }
+    }
+  }
+}
+
 module.exports = {
   getUsers,
   getUserById,
-  registerUser
+  registerUser,
+  checkToken
 };
