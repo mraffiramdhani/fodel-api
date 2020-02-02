@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(responseTime());
 app.use(compression());
-app.use('/api', router);
+app.use(`/api/v${process.env.API_VERSION}`, router);
 // app.use('/images', express.static(path.join(__dirname, 'public/images')));
 // app.use('/logos', express.static(path.join(__dirname, 'public/logos')));
 
