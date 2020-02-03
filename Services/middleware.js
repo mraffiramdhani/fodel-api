@@ -34,8 +34,8 @@ const hasRole = function HasRole(roles) {
   // eslint-disable-next-line no-param-reassign
   if (roles === 'all') roles = ['customer', 'administrator', 'restaurant'];
   return (req, res, next) => {
-    const { roleId } = req.auth;
-    conn.execute('select * from roles where id=?', [roleId], (err, result) => {
+    const { role_id } = req.auth;
+    conn.execute('select * from roles where id=?', [role_id], (err, result) => {
       if (err) {
         response(res, 200, false, 'Error.', err);
       }

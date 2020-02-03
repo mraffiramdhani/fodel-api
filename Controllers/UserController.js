@@ -63,16 +63,72 @@ const getUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
   const { id } = req.params;
-  const user = await User.getUserById(id);
-  if (user) {
-    return response(res, 200, true, 'Data Found.', user[0]);
-  }
-  else {
-    return response(res, 200, false, 'Data not Found.');
-  }
+  await User.getUserById(id).then((user) => {
+    if (user) {
+      return response(res, 200, true, 'Data Found.', user[0]);
+    }
+    else {
+      return response(res, 200, false, 'Data not Found.');
+    }
+  }).catch((error) => response(res, 200, false, 'Error At Fetching User By ID', error));
 };
+
+const createUser = async (req, res) => {
+  await User.createUser(req.body).then(async (result) => {
+    const { insertId } = result;
+    if(insertId > 0){
+      await User.getUserById(insertId).then((_result) => {
+        if (_result.length > 0){
+          return response(res, 200, true, 'User Created Successfuly.', _result[0]);
+        }
+        else {
+          return response(res, 200, false, 'Fetching User Data Failed. Please Try Again.');
+        }
+      }).catch((error) => response(res, 200, false, 'Error At Fetching User Data', error));
+    }
+    else{
+      return response(res, 200, false, 'Creating User Failed. Please Try Again.');
+    }
+  }).catch((error) => response(res, 200, false , 'Error At Creating User', error));
+};
+
+const updateUser = async (req, res) => {
+  const { id } = req.body;
+  await User.updateUser(id, req.body).then(async (result) => {
+    const { affectedRows } = result;
+    if (affectedRows > 0) {
+      await User.getUserById(id).then((_result) => {
+        if(_result.length > 0){
+          return response(res, 200, true, 'User Updated Successfuly.', _result[0]);
+        }
+        else{
+          return response(res, 200, false, 'Fetching User Data Failed. Please Try Again');
+        }
+      }).catch((error) => response(res, 200, false, 'Error At Fetching User By ID', error));
+    }
+    else {
+      return response(res, 200, false, 'Updating User Failed. Please Try Again.');
+    }
+  }).catch((error) => response(res, 200, false, 'Error At Updating User', error));
+};
+
+const deleteUser = async (req, res) => {
+  const { id } = req.body;
+  await User.deleteUser(id).then(() => {
+    const { affectedRows } = result;
+    if(affectedRows > 0){
+      return response(res, 200, true, 'User Deleted Successfuly.');
+    }
+    else {
+      return response(res, 200, false, 'Deleting User Failed. Please Try Again');
+    }
+  }).catch((error) => response(res, 200, false, 'Error At Deleting User.', error));
+}
 
 module.exports = {
   getUsers,
-  getUserById
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser
 };
