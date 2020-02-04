@@ -6,7 +6,7 @@ const express = require('express'),
   morgan = require('morgan'),
   compression = require('compression'),
   bodyParser = require('body-parser'),
-  expressValidator = require('express-validator'),
+  // expressValidator = require('express-validator'),
   responseTime = require('response-time'),
   router = require('./Routes'),
   port = process.env.APP_PORT || 8001;
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(expressValidator());
+// app.use(expressValidator());
 app.use(cors());
 app.use(responseTime());
 app.use(compression());

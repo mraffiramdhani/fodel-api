@@ -59,7 +59,7 @@ const getUsersByRole = (roleId) => {
 
 const createUser = (data) => {
   const {
-    name, username, password, role_id 
+    name, username, password, role_id
   } = data;
   const encPass = bcrypt.hashSync(password);
   const sql = 'INSERT INTO users(name, username, password, role_id) VALUES(?,?,?,?)';
