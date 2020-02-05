@@ -43,7 +43,7 @@ module.exports.uploadRestaurantImage = multer({
     }
     return cb(`Error: File upload only supports the following filetypes - ${filetypes}`);
   }
-}).single('image');
+}).single('logo');
 
 module.exports.uploadCategoryIcon = multer({
   storage: iconStorage,
