@@ -4,11 +4,12 @@ const express = require('express'),
     UserController,
     AuthController,
     CartController,
-    CategoryController
+    CategoryController,
+    ItemController,
   } = require('../Controllers'),
   router = express.Router();
 const { auth, hasRole } = require('../Services/middleware');
-const { uploadCategoryIcon } = require('../Utils');
+const { uploadCategoryIcon, uploadMenuImages } = require('../Utils');
 
 router
   .get('/', HomeController.index);
@@ -32,6 +33,13 @@ router
   .post('/category', auth, hasRole('administrator'), uploadCategoryIcon, CategoryController.createCategory)
   .patch('/category/:id', auth, hasRole('administrator'), uploadCategoryIcon, CategoryController.updateCategory)
   .delete('/category/:id', auth, hasRole('administrator'), CategoryController.deleteCategory);
+
+router
+  .get('/item', ItemController.getItems)
+  .get('/item/:id', ItemController.getItem)
+  .post('/item', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.createItem)
+  .patch('/item/:id', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.updateItem)
+  .delete('/item/:id', auth, hasRole(['administrator', 'restaurant']), ItemController.deleteItem);
 
 router
   .post('/login', AuthController.loginUser)

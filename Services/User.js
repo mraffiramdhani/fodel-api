@@ -1,4 +1,3 @@
-const bcrypt = require('bcryptjs');
 const conn = require('./db');
 const { paramParser } = require('../Utils');
 
@@ -61,10 +60,9 @@ const createUser = (data) => {
   const {
     name, username, password, role_id
   } = data;
-  const encPass = bcrypt.hashSync(password);
   const sql = 'INSERT INTO users(name, username, password, role_id) VALUES(?,?,?,?)';
   return new Promise((resolve, reject) => {
-    conn.query(sql, [name, username, encPass, role_id],
+    conn.query(sql, [name, username, password, role_id],
       (err, res) => {
         if (err) reject(err);
         resolve(res);
@@ -75,10 +73,6 @@ const createUser = (data) => {
 const updateUser = (userId, data) => {
   var user = data;
   const sql = 'UPDATE users SET ? WHERE id=?';
-  if (user.password) {
-    const encPass = bcrypt.hashSync(user.password);
-    user.password = encPass;
-  }
   return new Promise((resolve, reject) => {
     conn.query(sql,
       [user, userId],

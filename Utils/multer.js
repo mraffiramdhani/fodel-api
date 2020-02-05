@@ -29,7 +29,7 @@ module.exports.uploadMenuImages = multer({
     }
     return cb(`Error: File upload only supports the following filetypes - ${filetypes}`);
   }
-}).array('image', 10);
+}).array('images', 10);
 
 module.exports.uploadRestaurantImage = multer({
   storage: imageStorage,

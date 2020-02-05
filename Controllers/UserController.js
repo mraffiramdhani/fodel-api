@@ -3,7 +3,7 @@
 /* eslint-disable no-else-return */
 const qs = require('qs');
 const {
-  response, redis, urlParser
+  response, redis, urlParser, hashString
 } = require('../Utils');
 const { User } = require('../Services');
 
@@ -75,6 +75,10 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
+  if (req.body.password) {
+    const encPass = hashString(req.body.password);
+    req.body.password = encPass;
+  }
   await User.createUser(req.body).then(async (result) => {
     const { insertId } = result;
     if (insertId > 0) {
@@ -95,6 +99,10 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { id } = req.params;
+  if (req.body.password) {
+    const encPass = hashString(req.body.password);
+    req.body.password = encPass;
+  }
   await User.updateUser(id, req.body).then(async (result) => {
     const { affectedRows } = result;
     if (affectedRows > 0) {

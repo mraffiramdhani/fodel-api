@@ -24,7 +24,7 @@ app.use(responseTime());
 app.use(compression());
 app.use(`/api/v${process.env.API_VERSION}`, router);
 app.use('/images', express.static(path.join(__dirname, 'Public/Image')));
-app.use('/logos', express.static(path.join(__dirname, 'Public/Icon')));
+app.use('/icons', express.static(path.join(__dirname, 'Public/Icon')));
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
