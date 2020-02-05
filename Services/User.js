@@ -4,7 +4,7 @@ const { paramParser } = require('../Utils');
 
 const getUsersCount = (exceptionId, searchParams = null, sortParams = null) => {
   const sql = `SELECT COUNT(*) AS count FROM users WHERE id != ${exceptionId} ${searchParams !== null ? ' AND ' : ''}`;
-  const parsedSQL = paramParser(sql, searchParams, sortParams);
+  const parsedSQL = paramParser(sql, searchParams, sortParams, false);
 
   return new Promise((resolve, reject) => {
     conn.query(parsedSQL, [], (err, res) => {
@@ -16,7 +16,7 @@ const getUsersCount = (exceptionId, searchParams = null, sortParams = null) => {
 
 const getUsers = (exceptionId, searchParams = null, sortParams = null, limitParams = '0,10') => {
   const sql = `SELECT * FROM users WHERE id != ${exceptionId} ${searchParams !== null ? ' AND ' : ''}`;
-  const parsedSQL = paramParser(sql, searchParams, sortParams);
+  const parsedSQL = paramParser(sql, searchParams, sortParams, false);
 
   return new Promise((resolve, reject) => {
     const sqlStr = parsedSQL.concat(` LIMIT ${limitParams}`);

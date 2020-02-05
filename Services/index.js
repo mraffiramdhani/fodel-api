@@ -4,8 +4,8 @@ const User = require('./User');
 const Token = require('./Token');
 
 module.exports = {
-	Cart,
-	Category,
+  Cart,
+  Category,
   User,
   Token
 };
