@@ -35,21 +35,21 @@ const getUserReview = (id) => {
 
 const createItemReview = (id, data) => {
   const { rating, review, item_id } = data;
-  const sql = 'INSERT INTO reviews(rating, review, item_id) VALUES(?,?,?)';
+  const sql = 'INSERT INTO reviews(rating, review, item_id, user_id) VALUES(?,?,?,?)';
 
   return new Promise((resolve, reject) => {
-    conn.query(sql, [rating, review, item_id], (err, res) => {
+    conn.query(sql, [rating, review, item_id, id], (err, res) => {
       if (err) reject(err);
       resolve(res);
     });
   });
 };
 
-const updateItemReview = (id, data) => {
-  const sql = 'UPDATE reviews SET ? WHERE id = ?';
+const updateItemReview = (id, itemId, data) => {
+  const sql = 'UPDATE reviews SET ? WHERE id = ? AND user_id = ?';
 
   return new Promise((resolve, reject) => {
-    conn.query(sql, [data, id], (err, res) => {
+    conn.query(sql, [data, itemId, id], (err, res) => {
       if (err) reject(err);
       resolve(res);
     });

@@ -3,11 +3,11 @@
 /* eslint-disable no-else-return */
 const qs = require('qs');
 const {
-  response, redis, urlParser, uploadRestaurantImage
+  response, redis, urlParser
 } = require('../Utils');
-const { Category } = require('../Services');
+const { Restaurant, User } = require('../Services');
 
-const getCategories = async (req, res) => {
+const getRestaurants = async (req, res) => {
   const { search, sort } = req.query;
   var numRows;
   var numPerPage = parseInt(req.query.perPage, 10) || 10;
@@ -16,13 +16,13 @@ const getCategories = async (req, res) => {
   var skip = (page - 1) * numPerPage;
   var limit;
 
-  await Category.getCategoryCount(search, sort).then((count) => {
-    numRows = count[0].count;
+  await Restaurant.getRestaurantCount(search, sort).then((count) => {
+    numRows = count.length;
     numPages = Math.ceil(numRows / numPerPage);
-  }).catch((error) => response(res, 200, false, 'Error. Fetching Category Count Failed.', error));
+  }).catch((error) => response(res, 200, false, 'Error. Fetching Restaurant Count Failed.', error));
 
   limit = `${skip},${numPerPage}`;
-  const redisKey = qs.stringify({ cat_index: '', data: req.query });
+  const redisKey = qs.stringify({ resto_index: '', data: req.query });
 
   return redis.get(redisKey, async (ex, data) => {
     if (data) {
@@ -30,10 +30,10 @@ const getCategories = async (req, res) => {
       return response(res, 200, true, 'Data Found - Redis Cache', resultJSON);
     }
     else {
-      const categories = await Category.getCategories(search, sort, limit);
-      if (categories) {
+      const restaurants = await Restaurant.getRestaurants(search, sort, limit);
+      if (restaurants) {
         const result = {
-          categories
+          restaurants
         };
         if (page <= numPages) {
           result.pagination = {
@@ -60,82 +60,79 @@ const getCategories = async (req, res) => {
   });
 };
 
-const getCategory = async (req, res) => {
+const getRestaurant = async (req, res) => {
   const { id } = req.params;
-  await Category.getCategory(id).then((category) => {
-    if (category) {
-      return response(res, 200, true, 'Data Found.', category[0]);
+  await Restaurant.getRestaurant(id).then((restaurant) => {
+    if (restaurant) {
+      return response(res, 200, true, 'Data Found.', restaurant[0]);
     }
     else {
       return response(res, 200, false, 'Data not Found.');
     }
-  }).catch((error) => response(res, 200, false, 'Error At Fetching Category By ID', error));
+  }).catch((error) => response(res, 200, false, 'Error At Fetching Restaurant By ID', error));
 };
 
-const createCategory = async (req, res) => {
+const createRestaurant = async (req, res) => {
   if (req.file !== null && req.file !== undefined) {
     const { filename } = req.file;
-    req.body.icon = filename;
+    req.body.logo = filename;
   }
-  await Category.createCategory(req.body).then(async (result) => {
+
+  await Restaurant.createRestaurant(req.body).then(async (result) => {
     const { insertId } = result;
     if (insertId > 0) {
-      await Category.getCategory(insertId).then((_result) => {
-        if (_result.length > 0) {
-          return response(res, 200, true, 'Category Created Successfuly.', _result[0]);
-        }
-        else {
-          return response(res, 200, false, 'Fetching Category Data Failed. Please Try Again.');
-        }
-      }).catch((error) => response(res, 200, false, 'Error At Fetching Category Data', error));
+      await User.updateUser(req.body.user_id, { role_id: 2 }).then(async () => {
+        await Restaurant.getRestaurant(insertId).then((_result) => {
+          if (_result.length > 0) {
+            return response(res, 200, true, 'Restaurant Created Successfuly.');
+          }
+          else {
+            return response(res, 200, false, 'Fetching Restaurant Data Failed. Please Try Again.');
+          }
+        }).catch((error) => response(res, 200, false, 'Error At Fetching Restaurant Data', error));
+      }).catch((error) => response(res, 200, false, 'Error At Updatinf User Role', error));
     }
     else {
-      return response(res, 200, false, 'Creating Category Failed. Please Try Again.');
+      return response(res, 200, false, 'Creating Restaurant Failed. Please Try Again.');
     }
-  }).catch((error) => response(res, 200, false, 'Error At Creating Category', error));
+  }).catch((error) => response(res, 200, false, 'Error At Creating Restaurant', error));
 };
 
-const updateCategory = async (req, res) => {
+const updateRestaurant = async (req, res) => {
   const { id } = req.params;
   if (req.file !== null && req.file !== undefined) {
     const { filename } = req.file;
-    req.body.icon = filename;
+    req.body.logo = filename;
   }
-  await Category.updateCategory(id, req.body).then(async (result) => {
+
+  await Restaurant.updateRestaurant(id, req.body).then(async (result) => {
     const { affectedRows } = result;
     if (affectedRows > 0) {
-      await Category.getCategory(id).then((_result) => {
-        if (_result.length > 0) {
-          return response(res, 200, true, 'Category Updated Successfuly.', _result[0]);
-        }
-        else {
-          return response(res, 200, false, 'Fetching Category Data Failed. Please Try Again');
-        }
-      }).catch((error) => response(res, 200, false, 'Error At Fetching Category By ID', error));
+      return response(res, 200, true, 'Restaurant Updated Successfuly.');
     }
     else {
-      return response(res, 200, false, 'Updating Category Failed. Please Try Again.');
+      return response(res, 200, false, 'Updating Restaurant Failed. Please Try Again.');
     }
-  }).catch((error) => response(res, 200, false, 'Error At Updating Categgory', error));
+  }).catch((error) => response(res, 200, false, 'Error At Updating Restaurant', error));
 };
 
-const deleteCategory = async (req, res) => {
+const deleteRestaurant = async (req, res) => {
   const { id } = req.params;
-  await Category.deleteCategory(id).then((result) => {
+  await Restaurant.deleteRestaurant(id).then((result) => {
     const { affectedRows } = result;
     if (affectedRows > 0) {
-      return response(res, 200, true, 'Category Deleted Successfuly.');
+      return response(res, 200, true, 'Restaurant Deleted Successfuly.');
     }
     else {
-      return response(res, 200, false, 'Deleting Category Failed. Please Try Again');
+      return response(res, 200, false, 'Deleting Restaurant Failed. Please Try Again');
     }
-  }).catch((error) => response(res, 200, false, 'Error At Deleting Category.', error));
+  }).catch((error) => response(res, 200, false, 'Error At Deleting Restaurant.', error));
 };
 
 module.exports = {
-  getCategories,
-  getCategory,
-  createCategory,
-  updateCategory,
-  deleteCategory
+  getRestaurants,
+  getRestaurant,
+  createRestaurant,
+  updateRestaurant,
+  deleteRestaurant
 };

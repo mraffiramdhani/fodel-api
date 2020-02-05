@@ -6,10 +6,12 @@ const express = require('express'),
     CartController,
     CategoryController,
     ItemController,
+    RestaurantController,
+    ReviewController
   } = require('../Controllers'),
   router = express.Router();
 const { auth, hasRole } = require('../Services/middleware');
-const { uploadCategoryIcon, uploadMenuImages } = require('../Utils');
+const { uploadCategoryIcon, uploadMenuImages, uploadRestaurantImage } = require('../Utils');
 
 router
   .get('/', HomeController.index);
@@ -40,6 +42,20 @@ router
   .post('/item', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.createItem)
   .patch('/item/:id', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.updateItem)
   .delete('/item/:id', auth, hasRole(['administrator', 'restaurant']), ItemController.deleteItem);
+
+router
+  .get('/restaurant', RestaurantController.getRestaurants)
+  .get('/restaurant/:id', RestaurantController.getRestaurant)
+  .post('/restaurant', auth, hasRole('administrator'), uploadRestaurantImage, RestaurantController.createRestaurant)
+  .patch('/restaurant/:id', auth, hasRole(['administrator', 'restaurant']), uploadRestaurantImage, RestaurantController.updateRestaurant)
+  .delete('/restaurant/:id', auth, hasRole(['administrator', 'restaurant']), RestaurantController.deleteRestaurant);
+
+router
+  .get('/review/:id', ReviewController.getItemReview)
+  .get('/review', auth, hasRole('customer'), ReviewController.getUserReview)
+  .post('/review', auth, hasRole('customer'), ReviewController.createReview)
+  .patch('/review/:itemId', auth, hasRole(['administrator', 'customer']), ReviewController.updateReview)
+  .delete('/review/:id', auth, hasRole(['administrator', 'customer']), ReviewController.deleteReview);
 
 router
   .post('/login', AuthController.loginUser)
