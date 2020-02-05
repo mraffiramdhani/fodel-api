@@ -32,6 +32,21 @@ const getRestaurant = (id) => {
       if (err) reject(err);
       resolve(res);
     });
+  }).then(async (restaurant) => {
+    const itemSql = 'SELECT * FROM items WHERE restaurant_id = ?';
+
+    const item = new Promise((resolve, reject) => {
+      conn.query(itemSql, [restaurant[0].id], (err, res) => {
+        if (err) reject(err);
+        resolve(res);
+      });
+    });
+
+    await item.then((items) => {
+      restaurant[0].items = items;
+    }).catch((error) => error);
+
+    return restaurant;
   });
 };
 

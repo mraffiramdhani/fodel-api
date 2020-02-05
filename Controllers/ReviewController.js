@@ -6,7 +6,7 @@ const getItemReview = async (req, res) => {
 
   await Review.getItemReview(id).then((result) => {
     if (result.length > 0) {
-      return response(res, 200, true, 'Data Found.', result[0]);
+      return response(res, 200, true, 'Data Found.', result);
     }
 
     return response(res, 200, true, 'Your Review Is Empty.');
@@ -18,7 +18,7 @@ const getUserReview = async (req, res) => {
 
   await Review.getUserReview(id).then((result) => {
     if (result.length > 0) {
-      return response(res, 200, true, 'Data Found.', result[0]);
+      return response(res, 200, true, 'Data Found.', result);
     }
 
     return response(res, 200, true, 'Your Review Is Empty.');
@@ -27,7 +27,6 @@ const getUserReview = async (req, res) => {
 
 const createReview = async (req, res) => {
   const { id } = req.auth;
-  req.body.item_id = req.params.id;
   await Review.createItemReview(id, req.body).then(async (result) => {
     const { insertId } = result;
     if (insertId > 0) {
