@@ -1,5 +1,5 @@
 const express = require('express'),
-  { HomeController, UserController, AuthController } = require('../Controllers'),
+  { HomeController, UserController, AuthController, CartController } = require('../Controllers'),
   router = express.Router();
 const { auth, hasRole } = require('../Services/middleware');
 
@@ -12,6 +12,12 @@ router
   .post('/user', auth, hasRole('administrator'), UserController.createUser)
   .patch('/user/:id', auth, hasRole('administrator'), UserController.updateUser)
   .delete('/user/:id', auth, hasRole('administrator'), UserController.deleteUser);
+
+router
+  .get('/cart', auth, hasRole('customer'), CartController.getCart)
+  .post('/cart', auth, hasRole('customer'), CartController.addItemToCart)
+  .patch('/cart/:itemId', auth, hasRole('customer'), CartController.updateItemInCart)
+  .delete('/cart/:itemId', auth, hasRole('customer'), CartController.deleteItemInCart);
 
 router
   .post('/login', AuthController.loginUser)
