@@ -12,12 +12,12 @@ const urlParser = (search = null, sort = null, page = 1, perPage = 10) => {
     });
   }
   if (page !== null) {
-    pageLinks += `page=${page}`;
+    pageLinks += `page=${page}&`;
   }
   if (perPage !== null) {
     pageLinks += `perPage=${perPage}`;
   }
-  return pageLinks;
+  return encodeURI(pageLinks);
 };
 
 module.exports = urlParser;

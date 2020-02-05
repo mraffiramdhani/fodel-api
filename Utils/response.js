@@ -1,4 +1,4 @@
-const response = (res, statusRes = 200, success = true, message = "OK", payload = {}) => {
+const response = (res, statusRes = 200, success = true, message = 'OK', payload = []) => {
   const payloadResponse = {};
   payloadResponse.success = success;
   payloadResponse.message = message;

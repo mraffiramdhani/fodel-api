@@ -1,13 +1,16 @@
-const bcrypt = require('bcryptjs');
-const { response, signToken, verifyToken } = require('../Utils');
+/* eslint-disable consistent-return */
+const {
+  response, signToken, verifyToken, hashString, compareHashedString
+} = require('../Utils');
 const { User, Token } = require('../Services');
 
 // eslint-disable-next-line consistent-return
 const registerUser = async (req, res) => {
   const { name, username, password } = req.body;
   const fixedRoleId = 3;
+  const encPass = hashString(password);
   var data = {
-    name, username, password, role_id: fixedRoleId
+    name, username, password: encPass, role_id: fixedRoleId
   };
 
   if (!data.name || !data.username || !data.password) {
@@ -60,7 +63,7 @@ const loginUser = async (req, res) => {
 
   const user = await User.getUserByUsername(username);
   if (user.length > 0) {
-    if (bcrypt.compareSync(password, user[0].password)) {
+    if (compareHashedString(password, user[0].password)) {
       // eslint-disable-next-line camelcase
       const { id, name, role_id } = user[0];
       const token = signToken({
