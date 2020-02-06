@@ -7,6 +7,16 @@ const {
 } = require('../Utils');
 const { Restaurant, User } = require('../Services');
 
+const registerRestaurant = async (req, res) => {
+  console.log(req.body);
+  res.end();
+}
+
+const approveRestaurant = async (req, res) => {
+  console.log(req.body);
+  res.end();
+}
+
 const getRestaurants = async (req, res) => {
   const { search, sort } = req.query;
   var numRows;
@@ -130,6 +140,8 @@ const deleteRestaurant = async (req, res) => {
 };
 
 module.exports = {
+  registerRestaurant,
+  approveRestaurant,
   getRestaurants,
   getRestaurant,
   createRestaurant,

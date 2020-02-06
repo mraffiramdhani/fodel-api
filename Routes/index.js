@@ -48,7 +48,9 @@ router
   .get('/restaurant', RestaurantController.getRestaurants)
   .get('/restaurant/:id', RestaurantController.getRestaurant)
   .post('/restaurant', auth, hasRole('administrator'), uploadRestaurantImage, RestaurantController.createRestaurant)
+  .post('/restaurant/register', RestaurantController.registerRestaurant)
   .patch('/restaurant/:id', auth, hasRole(['administrator', 'restaurant']), uploadRestaurantImage, RestaurantController.updateRestaurant)
+  .patch('/restaurant/approve/:id', auth, hasRole('administrator'), RestaurantController.approveRestaurant)
   .delete('/restaurant/:id', auth, hasRole(['administrator', 'restaurant']), RestaurantController.deleteRestaurant);
 
 router

@@ -18,7 +18,8 @@ let createRecord = (knex, id, user_id) => {
     description: faker.lorem.paragraphs(3),
     user_id,
     created_at: new Date(),
-    updated_at: new Date()
+    updated_at: new Date(),
+    active: 1
   })
 }
 
