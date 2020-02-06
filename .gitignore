@@ -1,3 +1,4 @@
 node_modules
 Public
 .env
+knexfile.js
