@@ -232,8 +232,8 @@ const updateItem = (id, data) => {
   }).then((item) => {
     if (data.image.length > 0) {
       const imgArray = [];
-      data.image.map((v) => imgArray.push(`(${id}, ${v})`));
-      const imageSql = `DELETE FROM item_images WHERE item_id = ?;INSERT INTO item_images(item, filename) VALUES ${imgArray.join()}`;
+      data.image.map((v) => imgArray.push(`(${id}, '${v}')`));
+      const imageSql = `DELETE FROM item_images WHERE item_id = ?;INSERT INTO item_images(item_id, filename) VALUES ${imgArray.join()}`;
 
       return new Promise((resolve, reject) => {
         conn.query(imageSql, [id, imgArray.join()], (err, res) => {

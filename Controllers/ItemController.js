@@ -5,16 +5,25 @@ const qs = require('qs');
 const {
   response, redis, urlParser
 } = require('../Utils');
-const { Item } = require('../Services');
+const { Item, Restaurant } = require('../Services');
 
 const getItems = async (req, res) => {
-  const { search, sort } = req.query;
+  var { search, sort } = req.query;
   var numRows;
   var numPerPage = parseInt(req.query.perPage, 10) || 10;
   var page = parseInt(req.query.page, 10) || 1;
   var numPages;
   var skip = (page - 1) * numPerPage;
   var limit;
+
+  if(req.auth.role_id === 2){
+    await Restaurant.getRestaurant(req.auth.id).then((result) => {
+      if(search === undefined){
+        search = {};
+      }
+      search.restaurant_id = result[0].id;
+    });
+  }
 
   await Item.getItemCount(search, sort).then((count) => {
     numRows = count.length;
@@ -60,6 +69,23 @@ const getItems = async (req, res) => {
   });
 };
 
+const getCount = async (req, res) => {
+  const { id, role_id } = req.auth;
+  var search = null;
+
+  if(role_id === 2){
+    await Restaurant.getRestaurant(id).then((result) => {
+      if(search === null){
+        search = {};
+      }
+      search.restaurant_id = result[0].id;
+    });
+  }
+  await Item.getItemCount(search, null).then((count) => {
+    return response(res, 200, true, 'Data Found.', count.length);
+  }).catch((error) => response(res, 200, false, 'Error. Fetching Item Count Failed.', error));
+}
+
 const getItem = async (req, res) => {
   const { id } = req.params;
   await Item.getItem(id).then((item) => {
@@ -99,8 +125,7 @@ const updateItem = async (req, res) => {
   req.files.map((v) => req.body.image.push(v.filename));
 
   await Item.updateItem(id, req.body).then(async (result) => {
-    const { affectedRows } = result[0];
-    if (affectedRows > 0) {
+    if (result.length > 0) {
       return response(res, 200, true, 'Item Updated Successfuly.');
     }
     else {
@@ -124,6 +149,7 @@ const deleteItem = async (req, res) => {
 
 module.exports = {
   getItems,
+  getCount,
   getItem,
   createItem,
   updateItem,

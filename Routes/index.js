@@ -37,8 +37,9 @@ router
   .delete('/category/:id', auth, hasRole('administrator'), CategoryController.deleteCategory);
 
 router
-  .get('/item', ItemController.getItems)
-  .get('/item/:id', ItemController.getItem)
+  .get('/item', auth, ItemController.getItems)
+  .get('/item/:id', auth, ItemController.getItem)
+  .get('/count/item', auth, ItemController.getCount)
   .post('/item', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.createItem)
   .patch('/item/:id', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.updateItem)
   .delete('/item/:id', auth, hasRole(['administrator', 'restaurant']), ItemController.deleteItem);
@@ -61,6 +62,9 @@ router
   .post('/login', AuthController.loginUser)
   .post('/register', AuthController.registerUser)
   .post('/token/check', AuthController.checkToken)
+  .post('/password', AuthController.forgotPassword)
+  .patch('/password/reset', auth, AuthController.updateProfile)
+  .get('/profile', auth, AuthController.getProfile)
   .get('/logout', AuthController.logoutUser);
 
 module.exports = router;

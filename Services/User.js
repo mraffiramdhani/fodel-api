@@ -57,11 +57,11 @@ const getUsersByRole = (roleId) => {
 
 const createUser = (data) => {
   const {
-    name, username, password, role_id
+    name, email, username, password, role_id
   } = data;
-  const sql = 'INSERT INTO users(name, username, password, role_id) VALUES(?,?,?,?)';
+  const sql = 'INSERT INTO users(name, email, username, password, role_id) VALUES(?,?,?,?,?)';
   return new Promise((resolve, reject) => {
-    conn.query(sql, [name, username, password, role_id],
+    conn.query(sql, [name, email, username, password, role_id],
       (err, res) => {
         if (err) reject(err);
         resolve(res);

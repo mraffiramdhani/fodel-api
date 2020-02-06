@@ -17,7 +17,7 @@ const getUsers = async (req, res) => {
   var limit;
 
   await User.getUsersCount(1, search, sort).then((count) => {
-    numRows = count[0].count;
+    numRows = count.length;
     numPages = Math.ceil(numRows / numPerPage);
   }).catch((error) => response(res, 200, false, 'Error. Fetching User Count Failed.', error));
 

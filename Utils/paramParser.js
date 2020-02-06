@@ -1,6 +1,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
 const regParam = {
+  restaurant_id: 'items.restaurant_id = value',
   maxPrice: 'items.price <= value',
   minPrice: 'items.price >= value',
   category: 'item_category.category_id in (value)',

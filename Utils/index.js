@@ -9,6 +9,7 @@ const {
 } = require('./generator');
 const { dateRange, convertDate } = require('./date');
 const { uploadCategoryIcon, uploadMenuImages, uploadRestaurantImage } = require('./multer');
+const { sendEmail } = require('./mail');
 
 module.exports = {
   response,
@@ -27,5 +28,6 @@ module.exports = {
   convertDate,
   uploadCategoryIcon,
   uploadMenuImages,
-  uploadRestaurantImage
+  uploadRestaurantImage,
+  sendEmail
 };
