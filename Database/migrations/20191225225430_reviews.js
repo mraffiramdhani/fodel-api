@@ -2,8 +2,8 @@
 exports.up = function (knex) {
     return knex.schema.createTable('reviews', table => {
         table.increments('id')
-        table.integer('rating', 1)
-        table.text('review')
+        table.integer('rating', 1).nullable()
+        table.text('review').nullable()
         table.integer('item_id').unsigned()
         table.integer('user_id').unsigned()
         table.dateTime('created_at').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'))

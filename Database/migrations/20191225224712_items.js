@@ -4,7 +4,7 @@ exports.up = function (knex) {
         table.increments('id')
         table.string('name')
         table.decimal('price', 12, 2)
-        table.text('description')
+        table.text('description').nullable()
         table.integer('restaurant_id').unsigned()
         table.dateTime('created_at').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP'))
         table.dateTime('updated_at').notNullable().defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))

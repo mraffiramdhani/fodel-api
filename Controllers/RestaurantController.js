@@ -3,19 +3,66 @@
 /* eslint-disable no-else-return */
 const qs = require('qs');
 const {
-  response, redis, urlParser
+  response, redis, urlParser, hashString
 } = require('../Utils');
 const { Restaurant, User } = require('../Services');
 
 const registerRestaurant = async (req, res) => {
-  console.log(req.body);
-  res.end();
-}
+  const { password } = req.body;
+  const encPass = hashString(password);
+  req.body.password = encPass;
+  req.body.role_id = 3;
+
+  await User.createUser(req.body).then(async (result) => {
+    const { insertId } = result;
+    if (insertId > 0) {
+      const data = {
+        name: req.body.restaurant_name,
+        user_id: insertId,
+      }
+
+      await Restaurant.createRestaurant(data).then((_result) => {
+        if (_result.insertId > 0) {
+          return response(res, 200, true, 'Request Sended');
+        }
+        else {
+          return response(res, 200, false, 'Creating Restaurant Failed. Please Try Again.');
+        }
+      }).catch((error) => response(res, 200, false, 'Error At Creating Restaurant.', error));
+    }
+    else {
+      return response(res, 200, false, 'Creating Restaurant User Failed. Please Try Again');
+    }
+  }).catch((error) => response(res, 200, false, 'Error At Creating Restaurant User.', error));
+};
 
 const approveRestaurant = async (req, res) => {
-  console.log(req.body);
-  res.end();
-}
+  const { id } = req.params;
+
+  await Restaurant.updateRestaurant(id, {active:1}).then(async (result) => {
+    const { affectedRows } = result;
+    if (affectedRows > 0) {
+      const restaurant = await Restaurant.getRestaurant(id);
+      if (restaurant) {
+        await User.updateUser(restaurant[0].user_id, {role_id: 2}).then((_result) => {
+          const { affectedRows } = _result;
+          if (affectedRows > 0) {
+            return response(res, 200, true, 'Restaurant Approved.');
+          }
+          else {
+            return response(res, 200, false, 'Updating User Data Failed. Please Try Again.');
+          }
+        }).catch((error) => response(res, 200, false, 'Error At Updating User Data.', error));
+      }
+      else {
+        return response(res, 200, false, 'Fetching Restaurant Data Failed. Please Try Again.')
+      }
+    }
+    else {
+      return response(res, 200, false, 'Updating Restaurant Status Failed. Please Try Again.');
+    }
+  }).catch((error) => response(res, 200, false, 'Error At Updating Restaurant Status', error));
+};
 
 const getRestaurants = async (req, res) => {
   const { search, sort } = req.query;

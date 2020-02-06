@@ -22,8 +22,8 @@ exports.seed = (knex) => {
       let records = []
       let roles = [1, 2, 2, 2, 2, 3, 3, 3, 3, 3]
       // Inserts seed entries
-      for (let i = 1; i <= roles.length; i++) {
-        records.push(createRecord(knex, i, roles[i - 1]))
+      for (let i = 0; i < roles.length; i++) {
+        records.push(createRecord(knex, (i+1), roles[i]))
       }
 
       console.log('users seed')
