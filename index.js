@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const express = require('express'),
   cors = require('cors'),
   path = require('path'),
@@ -25,6 +25,11 @@ app.use(compression());
 app.use(`/api/v${process.env.API_VERSION}`, router);
 app.use('/images', express.static(path.join(__dirname, 'Public/Image')));
 app.use('/icons', express.static(path.join(__dirname, 'Public/Icon')));
+app.use(express.static(path.join(__dirname, 'Client/build')));
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(`${__dirname}/Client/build/index.html`));
+});
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
