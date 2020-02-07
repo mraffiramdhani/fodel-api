@@ -72,13 +72,18 @@ Some of the end point require user(s) to have a spesific user privileges (e.g: a
 **1. GET**
 * `/`
 * `/user`
+* `/user/:id`
 * `/logout`
 * `/category`
+* `/category/:id`
 * `/restaurant`
 * `/restaurant/:id` (Get Restaurant by ID)
 * `/item`
 * `/item/:id` (Get Item by ID)
 * `/cart`
+* `/profile`
+* `/review`
+* `/review/:id` (Item ID)
 
 
 **2. POST**
@@ -92,38 +97,52 @@ Some of the end point require user(s) to have a spesific user privileges (e.g: a
     * ``` { "name": "John Doe", "username": "john_doe", "password": "s3cr3t_k3y", "role_id": 1 } ```
 
 * `/category`
-    * ``` { "name": "Cake" } ```
+    * ``` { "name": "Cake", "icon": "img-asdkjh.jpg" } ```
 
 * `/restaurant`
     * ``` { "name": "Joe's Pizza", "logo": "img.png", "longitude": -120.01280, "latitude": 11.109129, "description": "Lorem Ipsum Dolor Sit Amet", "user_id": 3 } ```
 
 * `/item`
-    * ``` { "name": "Macaronni and Cheese Pizza", "price": 12000 , "description": "Lorem Ipsum Dolor Sit Amet", "image": ArrayofObject, "category": 1,2,3, "restaurant_id": 1 } ```
+    * ``` { "name": "Macaronni and Cheese Pizza", "price": 12000 , "description": "Lorem Ipsum Dolor Sit Amet", "images": ArrayofObject, "category": 1,2,3, "restaurant_id": 1 } ```
 
-* `/review/:id`
+* `/review`
     * ``` { "rating": 4, "review": "Lorem Ipsum.", "item_id": 4 } ```
 
 * `/cart`
     * ``` { "item_id": 1, "quantity": 3, "description": "Lorem Ipsum." } ```
+
+* `/password`
+    * ``` { "username": "Mona_Weber", "email": "email@gmail.com" } ```
+
+* `/token/check`
+    * ``` { "token": "blablabla" } ```
+
+* `/restaurant/register`
+    * ``` { "name": "blablabla", "email": "email@gmail.com", "username": "bla_bla", "password": "password", "restaurant_name": "resto_name" } ```
 
 **3. PATCH**
 * `/user/:id` (Update User by id)
    * ``` { "name": "John Doe", "username": "john_doe", "password": "s3cr3t_k3y", "role_id": 1 } ```
 
 * `/category/:id` (Update Category by id)
-   * ``` { "name": "Category8" } ```
+   * ``` { "name": "Category8", "icon": "img.jpg" } ```
 
 * `/restaurant/:id` (Update Restaurant by id)
-   * ``` { "name": "Joe's Pizza", "longitude": -120.01280, "latitude": 11.109129, "description": "Lorem Ipsum Dolor Sit Amet", "user_id": 3 } ```
+   * ``` { "name": "Joe's Pizza", "logo": "img.png", "longitude": -120.01280, "latitude": 11.109129, "description": "Lorem Ipsum Dolor Sit Amet", "user_id": 3 } ```
 
 * `/item/:id` (Update Item by id)
-   * ``` { "name": "Macaronni and Cheese Pizza", "price": 12000 , "description": "Lorem Ipsum Dolor Sit Amet", "category": 1,2,3 } ```
+   * ``` { "name": "Macaronni and Cheese Pizza", "price": 12000 , "description": "Lorem Ipsum Dolor Sit Amet", "category": 1,2,3, "images": ArrayOfObject } ```
 
 * `/review/:id` (Update Review by id)
    * ``` { "rating": 4, "review": "Lorem Ipsum." } ```
 
 * `/cart/:id` (Update Cart by id)
    * ``` { "quantity": 3, "description": "Lorem Ipsum." } ```
+
+* `/password/reset`
+   * ``` { "password": ****** } ```
+
+* `/restaurant/approve/:id`
 
 **4. DELETE**
 * `/user/:id` (Delete User by id)
