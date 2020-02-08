@@ -20,7 +20,7 @@ const registerUser = async (req, res) => {
 
   await User.createUser(data).then(async () => {
     const token = signToken({ name, email, username, role_id: fixedRoleId });
-    await Token.putToken({ token }).then(() => response(res, 200, true, 'User Created Successfully.', { token, name, email, username, photo, role: 'customer' })).catch((error) => response(res, 200, false, 'Error', error));
+    await Token.putToken({ token }).then(() => response(res, 200, true, 'User Created Successfully.', { token, name, email, username, photo: 'default.png', role: 'customer' })).catch((error) => response(res, 200, false, 'Error', error));
   }).catch((error) => response(res, 200, false, 'Error.', error));
 };
 
