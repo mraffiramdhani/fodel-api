@@ -169,7 +169,7 @@ const updateProfilePhoto = async (req, res) => {
   await User.updateUser(id, {photo: filename}).then((result) => {
     const { affectedRows } = result;
     if (affectedRows > 0){
-      return response(res, 200, true, 'Profile Photo Updated Successfuly');
+      return response(res, 200, true, 'Profile Photo Updated Successfuly', {photo: filename});
     }
     else {
       return response(res, 200, false, 'Updating Profile Photo Failed. Please Try Again');
