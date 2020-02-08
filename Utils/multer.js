@@ -45,6 +45,20 @@ module.exports.uploadRestaurantImage = multer({
   }
 }).single('logo');
 
+module.exports.uploadProfilePhoto = multer({
+  storage: imageStorage,
+  limits: { fileSize: maxSize },
+  fileFilter(req, file, cb) {
+    var mimetype = filetypes.test(file.mimetype);
+    var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    return cb(`Error: File upload only supports the following filetypes - ${filetypes}`);
+  }
+}).single('image');
+
 module.exports.uploadCategoryIcon = multer({
   storage: iconStorage,
   limits: { fileSize: maxSize },

@@ -11,7 +11,7 @@ const express = require('express'),
   } = require('../Controllers'),
   router = express.Router();
 const { auth, hasRole } = require('../Services/middleware');
-const { uploadCategoryIcon, uploadMenuImages, uploadRestaurantImage } = require('../Utils');
+const { uploadCategoryIcon, uploadMenuImages, uploadRestaurantImage, uploadProfilePhoto } = require('../Utils');
 
 router
   .get('/', HomeController.index);
@@ -66,6 +66,7 @@ router
   .post('/token/check', AuthController.checkToken)
   .post('/password', AuthController.forgotPassword)
   .patch('/password/reset', auth, AuthController.updateProfile)
+  .patch('/profile/photo', auth, uploadProfilePhoto, AuthController.updateProfilePhoto)
   .get('/profile', auth, AuthController.getProfile)
   .get('/logout', AuthController.logoutUser);
 

@@ -8,6 +8,7 @@ let createRecord = (knex, id, role_id) => {
     name: faker.name.findName(),
     username: faker.internet.userName(),
     password: bcrypt.hashSync('password'),
+    photo: 'default.png',
     role_id,
     created_at: new Date(),
     updated_at: new Date()
