@@ -67,12 +67,13 @@ const updateItemInCart = (userId, itemId, data) => {
   });
 };
 
-const deleteItemInCart = (userId, itemId) => {
-  const sql = 'DELETE FROM carts WHERE user_id = ? AND item_id = ?';
+const deleteItemInCart = (userId, cartId) => {
+  const sql = 'DELETE FROM carts WHERE user_id = ? AND id = ?';
 
   return new Promise((resolve, reject) => {
-    conn.query(sql, [userId, itemId], (err, res) => {
+    conn.query(sql, [userId, cartId], (err, res) => {
       if (err) reject(err);
+      console.log(res);
       resolve(res);
     });
   });

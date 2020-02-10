@@ -57,6 +57,7 @@ const updateItemInCart = async (req, res) => {
 const deleteItemInCart = async (req, res) => {
 	const { id } = req.auth;
 	const { itemId } = req.params;
+	console.log(req.auth, req.params);
 	await Cart.deleteItemInCart(id, itemId).then(async (result) => {
 		const { affectedRows } = result;
 		if(affectedRows > 0){
