@@ -134,13 +134,13 @@ const getItem = (id) => {
     .then(async (item) => {
       let suggestSql = 'SELECT items.* FROM items ';
       suggestSql += 'INNER JOIN item_category ON item_category.item_id = items.id ';
-      suggestSql += 'WHERE item_category.category_id IN (?) LIMIT 5';
+      suggestSql += 'WHERE item_category.category_id IN (?) AND id != ? LIMIT 5';
 
       const suggestArray = [];
       item[0].categories.map((v) => suggestArray.push(v.id));
 
       const suggest = new Promise((resolve, reject) => {
-        conn.query(suggestSql, [suggestArray.join()], (err, res) => {
+        conn.query(suggestSql, [suggestArray.join(), id], (err, res) => {
           if (err) reject(err);
           resolve(res);
         });
