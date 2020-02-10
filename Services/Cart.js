@@ -9,6 +9,7 @@ const getCart = (userId) => {
       resolve(res);
     });
   }).then(async (cart) => {
+    console.log(cart);
     const itemSql = 'SELECT * from item_images where item_id = ?';
 
     for(let i = 0; i < cart.length; i++){
