@@ -57,12 +57,31 @@ const getCartById = (userId, cartId) => {
 
 const addItemToCart = (userId, data) => {
   const { item_id, quantity, description } = data;
-  const sql = 'INSERT INTO carts(item_id, quantity, description, user_id) VALUES(?,?,?,?)';
+  const sql = 'SELECT * FROM carts WHERE user_id = ? AND item_id = ?';
   return new Promise((resolve, reject) => {
-    conn.query(sql, [item_id, quantity, description, userId], (err, res) => {
+    conn.query(sql, [userId, item_id], (err, res) => {
       if (err) reject(err);
       resolve(res);
     });
+  }).then(async (cart) => {
+    if(cart.length > 0){
+      const upSql = 'UPDATE carts SET quantity = ?, description = ? WHERE user_id = ? AND item_id = ?';
+      return new Promise((resolve, reject) => {
+        conn.query(upSql, [quantity, description, userId, item_id], (err, res) => {
+          if (err) reject(err);
+          resolve(res);
+        });
+      });
+    }
+    else {
+      const inSql = 'INSERT INTO carts(item_id, quantity, description, user_id) VALUES(?,?,?,?)';
+      return new Promise((resolve, reject) => {
+        conn.query(inSql, [item_id, quantity, description, userId], (err, res) => {
+          if (err) reject(err);
+          resolve(res);
+        });
+      });
+    }
   });
 };
 

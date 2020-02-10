@@ -29,8 +29,7 @@ const getCartById = async (req, res) => {
 const addItemToCart = async (req, res) => {
 	const { id } = req.auth;
 	await Cart.addItemToCart(id, req.body).then(async (result) => {
-		const { insertId } = result;
-		if (insertId > 0){
+		if (result){
 			await Cart.getCart(id).then((_result) => {
 				if(_result.length > 0) {
 					return response(res, 200, true, 'Data Found.', _result);
