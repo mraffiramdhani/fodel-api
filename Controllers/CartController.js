@@ -62,8 +62,8 @@ const deleteItemInCart = async (req, res) => {
 		const { affectedRows } = result;
 		if(affectedRows > 0){
 			await Cart.getCart(id).then((_result) => {
-				if(result.length > 0){
-					return response(res, 200, true, 'Data Found.', result);
+				if(_result.length > 0){
+					return response(res, 200, true, 'Data Found.', _result);
 				}
 				else {
 					return response(res, 200, true, 'Your Cart Is Empty.');
