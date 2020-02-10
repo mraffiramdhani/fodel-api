@@ -74,8 +74,11 @@ const loginUser = async (req, res) => {
       if (role_id === 1) {
         role_name = 'administrator';
       }
-      else {
+      else if (role_id === 2) {
         role_name = 'restaurant';
+      }
+      else if (role_id === 3) {
+        role_name = 'customer';
       }
       Token.putToken({ token }).then(() => response(res, 200, true, 'User Logged In Successfuly.', { token, name, email, username, photo, role: role_name })).catch((error) => response(res, 200, false, 'Error At Storing Token.', error));
     }
