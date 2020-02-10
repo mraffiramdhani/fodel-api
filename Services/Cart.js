@@ -9,8 +9,7 @@ const getCart = (userId) => {
       resolve(res);
     });
   }).then(async (cart) => {
-    console.log(cart);
-    const itemSql = 'SELECT * from item_images where item_id = ?';
+    const itemSql = 'SELECT * FROM item_images WHERE item_id = ?';
 
     for(let i = 0; i < cart.length; i++){
       const image = new Promise((resolve, reject) => {
@@ -22,6 +21,23 @@ const getCart = (userId) => {
 
       await image.then((images) => {
         cart[i].images = images;
+      }).catch((error) => error);
+    }
+
+    return cart;
+  }).then(async (cart) => {
+    const itemDetailSql = 'SELECT * FROM items WHERE id = ?';
+
+    for(let i = 0; i < cart.length; i++){
+      const item = new Promise((resolve, reject) => {
+        conn.query(itemDetailSql, [cart[i].item_id], (err, res) => {
+          if (err) reject(err);
+          resolve(res);
+        });
+      });
+
+      await item.then((details) => {
+        cart[i].details = details[0];
       }).catch((error) => error);
     }
 
