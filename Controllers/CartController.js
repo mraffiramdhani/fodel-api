@@ -13,6 +13,19 @@ const getCart = async (req, res) => {
 	}).catch((error) => response(res, 200, false, 'Error At Fetching Cart Data.', error));
 };
 
+const getCartById = async (req, res) => {
+	const { id } = req.auth;
+	const { itemId } = req.params;
+	await Cart.getCartById(id, itemId).then((result) => {
+		if (result.length > 0) {
+			return response(res, 200, true, 'Data Found.', result[0]);
+		}
+		else {
+			return response(res, 200, false, 'Fetching Cart Data Failed. Please Try Again.');
+		}
+	}).catch((error) => response(res, 200, false, 'Error At Fetching Cart Data.', error));
+};
+
 const addItemToCart = async (req, res) => {
 	const { id } = req.auth;
 	await Cart.addItemToCart(id, req.body).then(async (result) => {
@@ -78,6 +91,7 @@ const deleteItemInCart = async (req, res) => {
 
 module.exports = {
 	getCart,
+	getCartById,
 	addItemToCart,
 	updateItemInCart,
 	deleteItemInCart

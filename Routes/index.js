@@ -25,6 +25,7 @@ router
 
 router
   .get('/cart', auth, hasRole('customer'), CartController.getCart)
+  .get('/cart/:itemId', auth, hasRole('customer'), CartController.getCartById)
   .post('/cart', auth, hasRole('customer'), CartController.addItemToCart)
   .patch('/cart/:itemId', auth, hasRole('customer'), CartController.updateItemInCart)
   .delete('/cart/:itemId', auth, hasRole('customer'), CartController.deleteItemInCart);

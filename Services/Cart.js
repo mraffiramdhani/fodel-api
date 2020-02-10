@@ -45,6 +45,16 @@ const getCart = (userId) => {
   });
 };
 
+const getCartById = (userId, cartId) => {
+  const sql = 'SELECT * FROM carts WHERE id = ? AND user_id = ?';
+  return new Promise((resolve, reject) => {
+    conn.query(sql, [cartId, userId], (err, res) => {
+      if (err) reject(err);
+      resolve(res);
+    });
+  });
+};
+
 const addItemToCart = (userId, data) => {
   const { item_id, quantity, description } = data;
   const sql = 'INSERT INTO carts(item_id, quantity, description, user_id) VALUES(?,?,?,?)';
@@ -81,6 +91,7 @@ const deleteItemInCart = (userId, cartId) => {
 
 module.exports = {
   getCart,
+  getCartById,
   addItemToCart,
   updateItemInCart,
   deleteItemInCart
