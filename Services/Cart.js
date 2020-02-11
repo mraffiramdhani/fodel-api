@@ -85,11 +85,11 @@ const addItemToCart = (userId, data) => {
   });
 };
 
-const updateItemInCart = (userId, itemId, data) => {
-  const sql = 'UPDATE carts SET ? WHERE item_id = ? AND user_id = ?';
+const updateItemInCart = (userId, cartId, data) => {
+  const sql = 'UPDATE carts SET ? WHERE id = ? AND user_id = ?';
 
   return new Promise((resolve, reject) => {
-    conn.query(sql, [data, itemId, userId], (err, res) => {
+    conn.query(sql, [data, cartId, userId], (err, res) => {
       if (err) reject(err);
       resolve(res);
     });
