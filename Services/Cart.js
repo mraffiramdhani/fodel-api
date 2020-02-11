@@ -65,7 +65,7 @@ const addItemToCart = (userId, data) => {
     });
   }).then(async (cart) => {
     if(cart.length > 0){
-      const upSql = 'UPDATE carts SET quantity = ?, description = ? WHERE user_id = ? AND item_id = ? is_complete = 0';
+      const upSql = 'UPDATE carts SET quantity = quantity + ?, description = ? WHERE user_id = ? AND item_id = ? AND is_complete = 0';
       return new Promise((resolve, reject) => {
         conn.query(upSql, [quantity, description, userId, item_id], (err, res) => {
           if (err) reject(err);
