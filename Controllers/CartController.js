@@ -69,7 +69,6 @@ const updateItemInCart = async (req, res) => {
 const deleteItemInCart = async (req, res) => {
 	const { id } = req.auth;
 	const { itemId } = req.params;
-	console.log(req.auth, req.params);
 	await Cart.deleteItemInCart(id, itemId).then(async (result) => {
 		const { affectedRows } = result;
 		if(affectedRows > 0){
@@ -88,10 +87,24 @@ const deleteItemInCart = async (req, res) => {
 	}).catch((error) => response(res, 200, false, 'Error At Deleting Cart Item.', error));
 };
 
+const checkoutCart = async (req, res) => {
+	const { id } = req.auth;
+	await Cart.checkoutCart(id).then(async (result) => {
+		const { affectedRows } = result;
+		if (affectedRows > 0) {
+			return response(res, 200, true, 'Checkout Complete.');
+		}
+		else {
+			return response(res, 200, false, 'Completing Checkout Failed. Please Try Again.', result);
+		}
+	}).catch((error) => response(res, 200, false, 'Error At Completing Checkout.', error));
+};
+
 module.exports = {
 	getCart,
 	getCartById,
 	addItemToCart,
 	updateItemInCart,
-	deleteItemInCart
+	deleteItemInCart,
+	checkoutCart
 }

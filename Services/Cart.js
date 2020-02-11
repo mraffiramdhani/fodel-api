@@ -102,16 +102,27 @@ const deleteItemInCart = (userId, cartId) => {
   return new Promise((resolve, reject) => {
     conn.query(sql, [userId, cartId], (err, res) => {
       if (err) reject(err);
-      console.log(res);
       resolve(res);
     });
   });
 };
+
+const checkoutCart = (userId) => {
+  const sql = 'UPDATE carts SET is_complete = 1 WHERE user_id = ? AND is_complete = 0';
+
+  return new Promise((resolve, reject) => {
+    conn.query(sql, [userId], (err, res) => {
+      if (err) reject(err);
+      resolve(res);
+    });
+  });
+}
 
 module.exports = {
   getCart,
   getCartById,
   addItemToCart,
   updateItemInCart,
-  deleteItemInCart
+  deleteItemInCart,
+  checkoutCart
 };
