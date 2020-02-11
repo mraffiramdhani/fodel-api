@@ -171,32 +171,49 @@ const getItem = (id) => {
 };
 
 const getLastOrder = (ids) => {
-  const sql = `SELECT id, name FROM items WHERE id IN (${ids})`;
+  const sql = 'SELECT items.*, (SELECT ROUND(AVG(rating),1) FROM reviews WHERE reviews.item_id = items.id) rating FROM items';
+  sql += ' INNER JOIN item_category ON item_category.item_id = items.id';
+  sql += ` WHERE items.id IN (${ids}) GROUP BY items.id`;
 
   return new Promise((resolve, reject) => {
-    conn.query(sql, [], (err, res) => {
+    conn.query(parsedSql, [], (err, res) => {
       if (err) reject(err);
       resolve(res);
     });
   }).then(async (items) => {
-    console.log(items);
-    const imgSql = 'SELECT * FROM item_images WHERE item_id = ?';
+    const imageSql = 'SELECT filename FROM item_images WHERE item_id = ?';
 
-    for(let i = 0; i < items.length; i++){
+    for (let i = 0; i < items.length; i++) {
       const image = new Promise((resolve, reject) => {
-        conn.query(imgSql, [items[i].id], (err, res) => {
+        conn.query(imageSql, [items[i].id], (err, res) => {
           if (err) reject(err);
           resolve(res);
         });
       });
-
       await image.then((images) => {
         items[i].images = images;
       }).catch((error) => error);
     }
 
     return items;
-  });
+  }).then(async (items) => {
+    const categorySql = 'SELECT * FROM categories INNER JOIN item_category ON categories.id = item_category.category_id WHERE item_category.item_id = ?';
+
+    for (let i = 0; i < items.length; i++) {
+      const category = new Promise((resolve, reject) => {
+        conn.query(categorySql, [items[i].id], (err, res) => {
+          if (err) reject(err);
+          resolve(res);
+        });
+      });
+
+      await category.then((categories) => {
+        items[i].categories = categories;
+      }).catch((error) => error);
+    }
+
+    return items;
+  }).catch((error) => error);
 };
 
 const createItem = (data) => {
