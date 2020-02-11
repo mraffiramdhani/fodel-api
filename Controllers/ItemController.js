@@ -102,7 +102,7 @@ const lastOrderedItem = async (req, res) => {
   const { ids } = req.body;
   await Item.getLastOrder(ids).then((result) => {
     if (result.length > 0) {
-      return response(res, 200, true, 'Data Found.', result);
+      return response(res, 200, true, 'Data Found.', {items: result});
     }
     else {
       return response(res, 200, false, 'Fetching Data Failed. Please Try Again.');
