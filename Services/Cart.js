@@ -1,7 +1,7 @@
 const conn = require('./db');
 
 const getCart = (userId) => {
-  const sql = 'SELECT * FROM carts WHERE user_id = ?';
+  const sql = 'SELECT * FROM carts WHERE user_id = ? AND is_complete = 0';
 
   return new Promise((resolve, reject) => {
     conn.query(sql, [userId], (err, res) => {
@@ -57,7 +57,7 @@ const getCartById = (userId, cartId) => {
 
 const addItemToCart = (userId, data) => {
   const { item_id, quantity, description } = data;
-  const sql = 'SELECT * FROM carts WHERE user_id = ? AND item_id = ?';
+  const sql = 'SELECT * FROM carts WHERE user_id = ? AND item_id = ? AND is_complete = 0';
   return new Promise((resolve, reject) => {
     conn.query(sql, [userId, item_id], (err, res) => {
       if (err) reject(err);
@@ -65,7 +65,7 @@ const addItemToCart = (userId, data) => {
     });
   }).then(async (cart) => {
     if(cart.length > 0){
-      const upSql = 'UPDATE carts SET quantity = ?, description = ? WHERE user_id = ? AND item_id = ?';
+      const upSql = 'UPDATE carts SET quantity = ?, description = ? WHERE user_id = ? AND item_id = ? is_complete = 0';
       return new Promise((resolve, reject) => {
         conn.query(upSql, [quantity, description, userId, item_id], (err, res) => {
           if (err) reject(err);
@@ -86,7 +86,7 @@ const addItemToCart = (userId, data) => {
 };
 
 const updateItemInCart = (userId, cartId, data) => {
-  const sql = 'UPDATE carts SET ? WHERE id = ? AND user_id = ?';
+  const sql = 'UPDATE carts SET ? WHERE id = ? AND user_id = ? AND is_complete = 0';
 
   return new Promise((resolve, reject) => {
     conn.query(sql, [data, cartId, userId], (err, res) => {
