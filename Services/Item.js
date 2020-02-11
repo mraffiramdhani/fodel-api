@@ -176,7 +176,7 @@ const getLastOrder = (ids) => {
   sql += ` WHERE items.id IN (${ids}) GROUP BY items.id`;
 
   return new Promise((resolve, reject) => {
-    conn.query(parsedSql, [], (err, res) => {
+    conn.query(sql, [], (err, res) => {
       if (err) reject(err);
       resolve(res);
     });
