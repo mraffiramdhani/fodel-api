@@ -170,6 +170,35 @@ const getItem = (id) => {
     .catch((error) => error);
 };
 
+const getLastOrder = (ids) => {
+  const sql = `SELECT id, name FROM items WHERE id IN (${ids})`;
+
+  return new Promise((resolve, reject) => {
+    conn.query(sql, [], (err, res) => {
+      if (err) reject(err);
+      resolve(res);
+    });
+  }).then(async (items) => {
+    console.log(items);
+    const imgSql = 'SELECT * FROM item_images WHERE item_id = ?';
+
+    for(let i = 0; i < items.length; i++){
+      const image = new Promise((resolve, reject) => {
+        conn.query(imgSql, [items[i].id], (err, res) => {
+          if (err) reject(err);
+          resolve(res);
+        });
+      });
+
+      await image.then((images) => {
+        items[i].images = images;
+      }).catch((error) => error);
+    }
+
+    return items;
+  });
+};
+
 const createItem = (data) => {
   const {
     name, price, description, image, category, restaurant_id
@@ -267,5 +296,6 @@ module.exports = {
   getItem,
   createItem,
   updateItem,
-  deleteItem
+  deleteItem,
+  getLastOrder
 };

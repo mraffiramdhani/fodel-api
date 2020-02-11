@@ -98,6 +98,18 @@ const getItem = async (req, res) => {
   }).catch((error) => response(res, 200, false, 'Error At Fetching Item By ID', error));
 };
 
+const lastOrderedItem = async (req, res) => {
+  const { ids } = req.body;
+  await Item.getLastOrder(ids).then((result) => {
+    if (result.length > 0) {
+      return response(res, 200, true, 'Data Found.', result);
+    }
+    else {
+      return response(res, 200, false, 'Fetching Data Failed. Please Try Again.');
+    }
+  }).catch((error) => response(res, 200, false, 'Error At Fetching Data.', error));
+}
+
 const createItem = async (req, res) => {
   const { id, role_id } = req.auth;
 
@@ -153,5 +165,6 @@ module.exports = {
   getItem,
   createItem,
   updateItem,
-  deleteItem
+  deleteItem,
+  lastOrderedItem
 };

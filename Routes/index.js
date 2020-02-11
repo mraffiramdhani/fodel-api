@@ -43,6 +43,7 @@ router
   .get('/item/:id', auth, ItemController.getItem)
   .get('/count/item', auth, ItemController.getCount)
   .post('/item', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.createItem)
+  .post('/order/item', auth, hasRole('customer'), ItemController.lastOrderedItem)
   .patch('/item/:id', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.updateItem)
   .delete('/item/:id', auth, hasRole(['administrator', 'restaurant']), ItemController.deleteItem);
 
