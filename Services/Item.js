@@ -171,7 +171,7 @@ const getItem = (id) => {
 };
 
 const getLastOrder = (ids) => {
-  const sql = 'SELECT items.*, (SELECT ROUND(AVG(rating),1) FROM reviews WHERE reviews.item_id = items.id) rating FROM items';
+  var sql = 'SELECT items.*, (SELECT ROUND(AVG(rating),1) FROM reviews WHERE reviews.item_id = items.id) rating FROM items';
   sql += ' INNER JOIN item_category ON item_category.item_id = items.id';
   sql += ` WHERE items.id IN (${ids}) GROUP BY items.id`;
 
