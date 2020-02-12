@@ -26,7 +26,7 @@ const createItemReview = (id, data) => {
   const { reviews } = data;
   const arr = [];
   reviews.map((v) => {
-    arr.push(`(${v.rating}, ${v.review}, ${v.item_id}, ${id})`);
+    arr.push(`(${v.rating}, '${v.review}', ${v.item_id}, ${id})`);
   })
   console.log(arr, reviews);
   const sql = `INSERT INTO reviews(rating, review, item_id, user_id) VALUES ${arr.join()}`;
