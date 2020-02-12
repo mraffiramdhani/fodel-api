@@ -3,7 +3,7 @@
 /* eslint-disable no-else-return */
 const qs = require('qs');
 const {
-  response, redis, urlParser, hashString
+  response, redis, urlParser, hashString, signToken
 } = require('../Utils');
 const { User } = require('../Services');
 
@@ -108,6 +108,11 @@ const updateUser = async (req, res) => {
     if (affectedRows > 0) {
       await User.getUserById(id).then((_result) => {
         if (_result.length > 0) {
+          const { name, username, role_id } = _result[0];
+          const token = signToken({
+            id: _result[0].id, name, username, role_id
+          });
+          _result[0].token = token;
           return response(res, 200, true, 'User Updated Successfuly.', _result[0]);
         }
         else {
