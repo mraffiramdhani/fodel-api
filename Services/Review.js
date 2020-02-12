@@ -33,7 +33,7 @@ const createItemReview = (id, data) => {
   console.log(sql);
 
   return new Promise((resolve, reject) => {
-    conn.query(sql, [rating, review, item_id, id], (err, res) => {
+    conn.query(sql, [], (err, res) => {
       if (err) reject(err);
       console.log(res);
       resolve(res);
