@@ -1,7 +1,7 @@
 const conn = require('./db');
 
 const getCart = (userId) => {
-  const sql = 'SELECT * FROM carts WHERE user_id = ? AND is_complete = 0';
+  const sql = 'SELECT * FROM carts WHERE user_id = ?';
 
   return new Promise((resolve, reject) => {
     conn.query(sql, [userId], (err, res) => {
