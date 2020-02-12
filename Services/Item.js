@@ -134,13 +134,13 @@ const getItem = (id) => {
     .then(async (item) => {
       let suggestSql = 'SELECT items.* FROM items ';
       suggestSql += 'INNER JOIN item_category ON item_category.item_id = items.id ';
-      suggestSql += 'WHERE item_category.category_id IN (?) LIMIT 5';
+      suggestSql += 'WHERE item_category.category_id IN (?) AND id != ? LIMIT 5';
 
       const suggestArray = [];
       item[0].categories.map((v) => suggestArray.push(v.id));
 
       const suggest = new Promise((resolve, reject) => {
-        conn.query(suggestSql, [suggestArray.join()], (err, res) => {
+        conn.query(suggestSql, [suggestArray.join(), id], (err, res) => {
           if (err) reject(err);
           resolve(res);
         });
@@ -168,6 +168,52 @@ const getItem = (id) => {
       return item;
     })
     .catch((error) => error);
+};
+
+const getLastOrder = (ids) => {
+  var sql = 'SELECT items.*, (SELECT ROUND(AVG(rating),1) FROM reviews WHERE reviews.item_id = items.id) rating FROM items';
+  sql += ' INNER JOIN item_category ON item_category.item_id = items.id';
+  sql += ` WHERE items.id IN (${ids}) GROUP BY items.id`;
+
+  return new Promise((resolve, reject) => {
+    conn.query(sql, [], (err, res) => {
+      if (err) reject(err);
+      resolve(res);
+    });
+  }).then(async (items) => {
+    const imageSql = 'SELECT filename FROM item_images WHERE item_id = ?';
+
+    for (let i = 0; i < items.length; i++) {
+      const image = new Promise((resolve, reject) => {
+        conn.query(imageSql, [items[i].id], (err, res) => {
+          if (err) reject(err);
+          resolve(res);
+        });
+      });
+      await image.then((images) => {
+        items[i].images = images;
+      }).catch((error) => error);
+    }
+
+    return items;
+  }).then(async (items) => {
+    const categorySql = 'SELECT * FROM categories INNER JOIN item_category ON categories.id = item_category.category_id WHERE item_category.item_id = ?';
+
+    for (let i = 0; i < items.length; i++) {
+      const category = new Promise((resolve, reject) => {
+        conn.query(categorySql, [items[i].id], (err, res) => {
+          if (err) reject(err);
+          resolve(res);
+        });
+      });
+
+      await category.then((categories) => {
+        items[i].categories = categories;
+      }).catch((error) => error);
+    }
+
+    return items;
+  }).catch((error) => error);
 };
 
 const createItem = (data) => {
@@ -267,5 +313,6 @@ module.exports = {
   getItem,
   createItem,
   updateItem,
-  deleteItem
+  deleteItem,
+  getLastOrder
 };

@@ -8,7 +8,7 @@ const {
   randomString, randomNumber, range, generateOTP
 } = require('./generator');
 const { dateRange, convertDate } = require('./date');
-const { uploadCategoryIcon, uploadMenuImages, uploadRestaurantImage } = require('./multer');
+const { uploadCategoryIcon, uploadMenuImages, uploadRestaurantImage, uploadProfilePhoto } = require('./multer');
 const { sendEmail } = require('./mail');
 
 module.exports = {
@@ -28,6 +28,7 @@ module.exports = {
   convertDate,
   uploadCategoryIcon,
   uploadMenuImages,
+  uploadProfilePhoto,
   uploadRestaurantImage,
   sendEmail
 };

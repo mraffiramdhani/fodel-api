@@ -22,24 +22,20 @@ const getUserReview = (id) => {
   });
 };
 
-// const getCategory = (id) => {
-//   const sql = 'SELECT * FROM categories WHERE id = ?';
-
-//   return new Promise((resolve, reject) => {
-//     conn.query(sql, [id], (err, res) => {
-//       if (err) reject(err);
-//       resolve(res);
-//     });
-//   });
-// };
-
 const createItemReview = (id, data) => {
-  const { rating, review, item_id } = data;
-  const sql = 'INSERT INTO reviews(rating, review, item_id, user_id) VALUES(?,?,?,?)';
+  const { reviews } = data;
+  const arr = [];
+  reviews.map((v) => {
+    arr.push(`(${v.rating}, '${v.review}', ${v.item_id}, ${id})`);
+  })
+  console.log(arr, reviews);
+  const sql = `INSERT INTO reviews(rating, review, item_id, user_id) VALUES ${arr.join()}`;
+  console.log(sql);
 
   return new Promise((resolve, reject) => {
-    conn.query(sql, [rating, review, item_id, id], (err, res) => {
+    conn.query(sql, [], (err, res) => {
       if (err) reject(err);
+      console.log(res);
       resolve(res);
     });
   });

@@ -11,7 +11,7 @@ const express = require('express'),
   } = require('../Controllers'),
   router = express.Router();
 const { auth, hasRole } = require('../Services/middleware');
-const { uploadCategoryIcon, uploadMenuImages, uploadRestaurantImage } = require('../Utils');
+const { uploadCategoryIcon, uploadMenuImages, uploadRestaurantImage, uploadProfilePhoto } = require('../Utils');
 
 router
   .get('/', HomeController.index);
@@ -25,8 +25,10 @@ router
 
 router
   .get('/cart', auth, hasRole('customer'), CartController.getCart)
+  .get('/cart/:itemId', auth, hasRole('customer'), CartController.getCartById)
   .post('/cart', auth, hasRole('customer'), CartController.addItemToCart)
   .patch('/cart/:itemId', auth, hasRole('customer'), CartController.updateItemInCart)
+  .patch('/checkout/cart', auth, hasRole('customer'), CartController.checkoutCart)
   .delete('/cart/:itemId', auth, hasRole('customer'), CartController.deleteItemInCart);
 
 router
@@ -41,6 +43,7 @@ router
   .get('/item/:id', auth, ItemController.getItem)
   .get('/count/item', auth, ItemController.getCount)
   .post('/item', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.createItem)
+  .post('/order/item', auth, hasRole('customer'), ItemController.lastOrderedItem)
   .patch('/item/:id', auth, hasRole(['administrator', 'restaurant']), uploadMenuImages, ItemController.updateItem)
   .delete('/item/:id', auth, hasRole(['administrator', 'restaurant']), ItemController.deleteItem);
 
@@ -66,6 +69,7 @@ router
   .post('/token/check', AuthController.checkToken)
   .post('/password', AuthController.forgotPassword)
   .patch('/password/reset', auth, AuthController.updateProfile)
+  .patch('/profile/photo', auth, uploadProfilePhoto, AuthController.updateProfilePhoto)
   .get('/profile', auth, AuthController.getProfile)
   .get('/logout', AuthController.logoutUser);
 

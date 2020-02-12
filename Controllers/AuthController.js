@@ -20,7 +20,7 @@ const registerUser = async (req, res) => {
 
   await User.createUser(data).then(async () => {
     const token = signToken({ name, email, username, role_id: fixedRoleId });
-    await Token.putToken({ token }).then(() => response(res, 200, true, 'User Created Successfully.', { token, name, email, username, role: 'customer' })).catch((error) => response(res, 200, false, 'Error', error));
+    await Token.putToken({ token }).then(() => response(res, 200, true, 'User Created Successfully.', { token, name, email, username, photo: 'default.png', role: 'customer' })).catch((error) => response(res, 200, false, 'Error', error));
   }).catch((error) => response(res, 200, false, 'Error.', error));
 };
 
@@ -66,7 +66,7 @@ const loginUser = async (req, res) => {
   if (user.length > 0) {
     if (compareHashedString(password, user[0].password)) {
       // eslint-disable-next-line camelcase
-      const { id, name, email, role_id } = user[0];
+      const { id, name, email, photo, role_id } = user[0];
       const token = signToken({
         id, name, username, role_id
       });
@@ -74,10 +74,13 @@ const loginUser = async (req, res) => {
       if (role_id === 1) {
         role_name = 'administrator';
       }
-      else {
+      else if (role_id === 2) {
         role_name = 'restaurant';
       }
-      Token.putToken({ token }).then(() => response(res, 200, true, 'User Logged In Successfuly.', { token, name, email, username, role: role_name })).catch((error) => response(res, 200, false, 'Error At Storing Token.', error));
+      else if (role_id === 3) {
+        role_name = 'customer';
+      }
+      Token.putToken({ token }).then(() => response(res, 200, true, 'User Logged In Successfuly.', { token, name, email, username, photo, role: role_name })).catch((error) => response(res, 200, false, 'Error At Storing Token.', error));
     }
     else {
       return response(res, 200, false, 'Invalid Password.');
@@ -162,6 +165,21 @@ const updateProfile = async (req, res) => {
   }).catch((error) => response(res, 200, false, 'Error At Updating User', error));
 };
 
+const updateProfilePhoto = async (req, res) => {
+  const { id } = req.auth;
+  const { filename } = req.file;
+
+  await User.updateUser(id, {photo: filename}).then((result) => {
+    const { affectedRows } = result;
+    if (affectedRows > 0){
+      return response(res, 200, true, 'Profile Photo Updated Successfuly', {photo: filename});
+    }
+    else {
+      return response(res, 200, false, 'Updating Profile Photo Failed. Please Try Again');
+    }
+  }).catch((error) => response(res, 200, false, 'Error At Updating User Profile Photo', error));
+};
+
 module.exports = {
   registerUser,
   checkToken,
@@ -169,5 +187,6 @@ module.exports = {
   logoutUser,
   forgotPassword,
   getProfile,
-  updateProfile
+  updateProfile,
+  updateProfilePhoto
 };

@@ -13,11 +13,23 @@ const getCart = async (req, res) => {
 	}).catch((error) => response(res, 200, false, 'Error At Fetching Cart Data.', error));
 };
 
+const getCartById = async (req, res) => {
+	const { id } = req.auth;
+	const { itemId } = req.params;
+	await Cart.getCartById(id, itemId).then((result) => {
+		if (result.length > 0) {
+			return response(res, 200, true, 'Data Found.', result[0]);
+		}
+		else {
+			return response(res, 200, false, 'Fetching Cart Data Failed. Please Try Again.');
+		}
+	}).catch((error) => response(res, 200, false, 'Error At Fetching Cart Data.', error));
+};
+
 const addItemToCart = async (req, res) => {
 	const { id } = req.auth;
 	await Cart.addItemToCart(id, req.body).then(async (result) => {
-		const { insertId } = result;
-		if (insertId > 0){
+		if (result){
 			await Cart.getCart(id).then((_result) => {
 				if(_result.length > 0) {
 					return response(res, 200, true, 'Data Found.', _result);
@@ -61,8 +73,8 @@ const deleteItemInCart = async (req, res) => {
 		const { affectedRows } = result;
 		if(affectedRows > 0){
 			await Cart.getCart(id).then((_result) => {
-				if(result.length > 0){
-					return response(res, 200, true, 'Data Found.', result);
+				if(_result.length > 0){
+					return response(res, 200, true, 'Data Found.', _result);
 				}
 				else {
 					return response(res, 200, true, 'Your Cart Is Empty.');
@@ -75,9 +87,24 @@ const deleteItemInCart = async (req, res) => {
 	}).catch((error) => response(res, 200, false, 'Error At Deleting Cart Item.', error));
 };
 
+const checkoutCart = async (req, res) => {
+	const { id } = req.auth;
+	await Cart.checkoutCart(id).then(async (result) => {
+		const { affectedRows } = result;
+		if (affectedRows > 0) {
+			return response(res, 200, true, 'Checkout Complete.');
+		}
+		else {
+			return response(res, 200, false, 'Completing Checkout Failed. Please Try Again.', result);
+		}
+	}).catch((error) => response(res, 200, false, 'Error At Completing Checkout.', error));
+};
+
 module.exports = {
 	getCart,
+	getCartById,
 	addItemToCart,
 	updateItemInCart,
-	deleteItemInCart
+	deleteItemInCart,
+	checkoutCart
 }
