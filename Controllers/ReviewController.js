@@ -27,6 +27,7 @@ const getUserReview = async (req, res) => {
 
 const createReview = async (req, res) => {
   const { id } = req.auth;
+  console.log(req.body);
   await Review.createItemReview(id, req.body).then(async (result) => {
     const { insertId } = result;
     if (insertId > 0) {
