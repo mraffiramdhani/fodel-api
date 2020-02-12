@@ -28,11 +28,14 @@ const createItemReview = (id, data) => {
   reviews.map((v) => {
     arr.push(`(${v.rating}, ${v.review}, ${v.item_id}, ${id})`);
   })
+  console.log(arr, reviews);
   const sql = `INSERT INTO reviews(rating, review, item_id, user_id) VALUES ${arr.join()}`;
+  console.log(sql);
 
   return new Promise((resolve, reject) => {
     conn.query(sql, [rating, review, item_id, id], (err, res) => {
       if (err) reject(err);
+      console.log(res);
       resolve(res);
     });
   });
