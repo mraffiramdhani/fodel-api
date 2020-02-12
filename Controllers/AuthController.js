@@ -152,6 +152,11 @@ const updateProfile = async (req, res) => {
     if (affectedRows > 0) {
       await User.getUserById(id).then((_result) => {
         if (_result.length > 0) {
+          const { name, username, role_id } = _result[0];
+          const token = signToken({
+            id: _result[0].id, name, username, role_id
+          });
+          _result[0].token = token;
           return response(res, 200, true, 'User Updated Successfuly.', _result[0]);
         }
         else {
