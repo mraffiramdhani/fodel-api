@@ -34,7 +34,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.0",
     "faker": "^4.1.0",
-    "knex": "^0.20.8",
+    "knex": "^2.4.0",
     "morgan": "^1.9.1"
   },
   "eslintConfig": {
