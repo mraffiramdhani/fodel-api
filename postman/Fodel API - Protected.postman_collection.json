@@ -1,0 +1,540 @@
+{
+  "info": {
+    "name": "Fodel API - Protected",
+    "_postman_id": "a7d0f057-0d2e-4f7e-a4aa-9b49ac89f002",
+    "description": "Protected endpoints for Fodel Rust API (Bearer token required).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Password (Profile)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"new_password\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/password/reset",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "password", "reset"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile Photo (Multipart)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/profile/photo",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "profile", "photo"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User (Admin)",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New User\",\n  \"email\": \"new.user@example.com\",\n  \"username\": \"new_user\",\n  \"password\": \"password\",\n  \"role_id\": 3,\n  \"photo\": \"default.png\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/user",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "user"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated User\",\n  \"email\": \"updated.user@example.com\",\n  \"role_id\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/user/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "user", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/user/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "user", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart (Customer)",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "cart"]
+            }
+          }
+        },
+        {
+          "name": "Get Cart By Item ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/cart/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "cart", "{{itemId}}"]
+            }
+          }
+        },
+        {
+          "name": "Add Item To Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"item_id\": {{itemId}},\n  \"quantity\": 2,\n  \"description\": \"No chili\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "cart"]
+            }
+          }
+        },
+        {
+          "name": "Update Item In Cart",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3,\n  \"description\": \"Less sugar\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/cart/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "cart", "{{itemId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Item In Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/cart/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "cart", "{{itemId}}"]
+            }
+          }
+        },
+        {
+          "name": "Checkout Cart",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/checkout/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "checkout", "cart"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Category (Admin Multipart)",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Cake", "type": "text" },
+                { "key": "icon", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/category",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "category"]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Category Updated", "type": "text" },
+                { "key": "icon", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/category/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "category", "{{categoryId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/category/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "category", "{{categoryId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Item",
+      "item": [
+        {
+          "name": "Get Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/item?page=1&perPage=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "item"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "perPage", "value": "10" },
+                { "key": "search", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Item By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/item/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "item", "{{itemId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Item (Multipart)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Nasi Goreng", "type": "text" },
+                { "key": "price", "value": "25000", "type": "text" },
+                { "key": "description", "value": "Spicy fried rice", "type": "text" },
+                { "key": "restaurant_id", "value": "{{restaurantId}}", "type": "text" },
+                { "key": "category", "value": "1,2", "type": "text" },
+                { "key": "images", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/item",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "item"]
+            }
+          }
+        },
+        {
+          "name": "Update Item (Multipart)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Nasi Goreng Spesial", "type": "text" },
+                { "key": "price", "value": "30000", "type": "text" },
+                { "key": "category", "value": "2,3", "type": "text" },
+                { "key": "images", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/item/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "item", "{{itemId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/item/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "item", "{{itemId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Item Count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/count/item",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "count", "item"]
+            }
+          }
+        },
+        {
+          "name": "Last Ordered Items",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [1, 2, 3]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/order/item",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "order", "item"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restaurant",
+      "item": [
+        {
+          "name": "Create Restaurant (Multipart)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "My Restaurant", "type": "text" },
+                { "key": "longitude", "value": "106.816666", "type": "text" },
+                { "key": "latitude", "value": "-6.200000", "type": "text" },
+                { "key": "description", "value": "Good food", "type": "text" },
+                { "key": "user_id", "value": "{{userId}}", "type": "text" },
+                { "key": "logo", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/restaurant",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "restaurant"]
+            }
+          }
+        },
+        {
+          "name": "Update Restaurant (Multipart)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "My Restaurant Updated", "type": "text" },
+                { "key": "description", "value": "Updated description", "type": "text" },
+                { "key": "active", "value": "1", "type": "text" },
+                { "key": "logo", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/restaurant/{{restaurantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "restaurant", "{{restaurantId}}"]
+            }
+          }
+        },
+        {
+          "name": "Approve Restaurant",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/restaurant/approve/{{restaurantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "restaurant", "approve", "{{restaurantId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Restaurant",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/restaurant/{{restaurantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "restaurant", "{{restaurantId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Review",
+      "item": [
+        {
+          "name": "Get My Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/review",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "review"]
+            }
+          }
+        },
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"review\": \"Excellent\",\n  \"item_id\": {{itemId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/review",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "review"]
+            }
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"review\": \"Updated review\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/review/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "review", "{{itemId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v{{apiVersion}}/review/{{reviewId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v{{apiVersion}}", "review", "{{reviewId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
